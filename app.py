@@ -1,23 +1,35 @@
-from flask import Flask
+import os
+import ujson as json
+import logging
+
+from flask import Flask, request
 from flask import render_template
+from models import Ticket
+
 app = Flask(__name__)
 
 @app.route("/")
 def hello():
 	return "EZCheck"
 
-@app.route("/tickets/", methods=["GET"])
+@app.route("/tickets", methods=["GET"])
 # Returns all tickets
 def get_tickets():
-	tickets = [
-		{'ticket_id': 1, 'color': "black", 'license': "V3101N", 'first_name': "Jason", 'last_name': "Willow"},
-	]
+	tickets = Ticket.all()
 	return render_template("tickets.html", tickets=tickets)
 
-@app.route("/tickets/", methods=["POST"])
-# Post a new ticket
+@app.route("/tickets", methods=["POST"])
+# Add a new ticket to the database
 def post_tickets():
-	pass
+	ticket_form = request.form.to_dict()
+	new_ticket = Ticket.create(ticket_form)
+
+	if not new_ticket:
+		return json_error("couldn't add ticket")
+
+	return json.dumps({
+        'ticket': new_ticket
+    }), 200
 
 if __name__ == "__main__":
 	app.run(debug=True)
