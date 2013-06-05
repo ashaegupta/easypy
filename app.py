@@ -25,11 +25,14 @@ def post_tickets():
 	new_ticket = Ticket.create(ticket_form)
 
 	if not new_ticket:
-		return json_error("couldn't add ticket")
+		return json.dumps({
+			'error': "couldn't add ticket"
+		}), 422
 
 	return json.dumps({
         'ticket': new_ticket
     }), 200
+
 
 if __name__ == "__main__":
 	app.run(debug=True)

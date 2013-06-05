@@ -10,7 +10,7 @@
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
-conn = MongoClient(host="localhost", port=27020)
+conn = MongoClient(host="localhost", port=27017)
 db = conn.ticket.ticket
 
 def all():
